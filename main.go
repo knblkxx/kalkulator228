@@ -92,6 +92,7 @@ func evaluatePostfix(postfix []string) (float64, error) {
 		} else if isOperator(token) {
 			if len(stack) < 2 {
 				return 0, errors.New("invalid expression")
+				w.WriteHeader(422)
 			}
 			b := stack[len(stack)-1]
 			a := stack[len(stack)-2]
@@ -111,17 +112,21 @@ func evaluatePostfix(postfix []string) (float64, error) {
 				stack = append(stack, a/b)
 			default:
 				return 0, fmt.Errorf("unknown operator: %s", token)
+				w.WriteHeader(422)
 			}
 		} else {
 			return 0, fmt.Errorf("invalid token: %s", token)
+			w.WriteHeader(500)
 		}
 	}
 
 	if len(stack) != 1 {
 		return 0, errors.New("invalid expression")
+		w.WriteHeader(422)
 	}
 
 	return stack[0], nil
+	w.WriteHeader(200)
 }
 
 func isNumber(token string) bool {
